@@ -2,8 +2,8 @@
 # PyInstaller 版本信息资源：让 exe 属性中显示软件名与版本
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 1, 1, 0),
-    prodvers=(1, 1, 1, 0),
+    filevers=(1, 1, 2, 0),
+    prodvers=(1, 1, 2, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -19,12 +19,12 @@ VSVersionInfo(
           [
             StringStruct('CompanyName', '抽题匠 PaperForge'),
             StringStruct('FileDescription', '抽题匠 PaperForge —— 题库随机抽题组卷工具'),
-            StringStruct('FileVersion', '1.1.1.0'),
+            StringStruct('FileVersion', '1.1.2.0'),
             StringStruct('InternalName', 'PaperForge'),
             StringStruct('LegalCopyright', 'MIT License (c) 2026 Bare-foot-Immortal'),
             StringStruct('OriginalFilename', 'PaperForge.exe'),
             StringStruct('ProductName', '抽题匠 PaperForge'),
-            StringStruct('ProductVersion', '1.1.1.0')
+            StringStruct('ProductVersion', '1.1.2.0')
           ]
         )
       ]
