@@ -79,6 +79,19 @@ def answer_file_of(paper_file: Path) -> Path:
     return paper_file.with_name(paper_file.name.replace("_", "_答案_", 1))
 
 
+
+def _force_utf8() -> None:
+    """Windows 控制台/CI 下强制 UTF-8 输出，避免中文打印触发 UnicodeEncodeError。"""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")     # type: ignore[union-attr]
+        except Exception:
+            pass
+
+
+_force_utf8()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="回读生成的试卷做独立校验")
     ap.add_argument("--bank", required=True, help="题库文件")
