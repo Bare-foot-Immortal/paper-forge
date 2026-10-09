@@ -11,7 +11,6 @@
 from __future__ import annotations
 
 import logging
-import shutil
 import sys
 import tempfile
 import unittest
@@ -20,9 +19,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from paperforge.bank_io import (BankIssue, TextLine, lines_to_questions,  # noqa: E402
-                                load_bank, SUPPORTED_SUFFIXES)
-from paperforge.models import QType                                       # noqa: E402
+from paperforge.bank_io import (  # noqa: E402
+    SUPPORTED_SUFFIXES,
+    TextLine,
+    lines_to_questions,
+    load_bank,
+)
+from paperforge.models import QType  # noqa: E402
 
 logging.getLogger("pypdf").setLevel(logging.CRITICAL)   # 坏文件用例会触发 pypdf 告警，测试中静音
 

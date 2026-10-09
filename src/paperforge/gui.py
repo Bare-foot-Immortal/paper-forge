@@ -9,19 +9,22 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import tkinter as tk
 import traceback
 from pathlib import Path
-
-import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from . import __app_name__, __version__
-from .bank_io import (bank_stats, export_questions_to_xlsx, load_bank,
-                      write_template_xlsx)
+from .bank_io import (
+    bank_stats,
+    export_questions_to_xlsx,
+    load_bank,
+    write_template_xlsx,
+)
 from .config import AppConfig
-from .exporter import ExportOptions, export_all, paper_to_text, safe_filename
-from .generator import GenOptions, GenerationError, generate, min_round_length
-from .models import Blueprint, GenReport, QType
+from .exporter import ExportOptions, export_all, paper_to_text
+from .generator import GenerationError, GenOptions, generate, min_round_length
+from .models import Blueprint, GenReport
 
 HELP_TEXT = """【抽题匠 PaperForge 使用说明】
 

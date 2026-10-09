@@ -24,10 +24,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from docx import Document                                    # noqa: E402
-from paperforge.bank_io import load_bank                     # noqa: E402
-from paperforge.generator import GenOptions, generate        # noqa: E402
-from paperforge.models import Blueprint, QType               # noqa: E402
+from docx import Document  # noqa: E402
+
+from paperforge.bank_io import load_bank  # noqa: E402
+from paperforge.generator import GenOptions, generate  # noqa: E402
+from paperforge.models import Blueprint, QType  # noqa: E402
 
 failures: list[str] = []
 
@@ -129,7 +130,7 @@ def main() -> int:
         label = pf.stem
         stats = {"single": 0, "multiple": 0, "judge": 0}
         mismatch: list[str] = []
-        for i, (item, ans) in enumerate(zip(items, answers), start=1):
+        for i, (item, ans) in enumerate(zip(items, answers, strict=False), start=1):
             q = by_stem.get(norm(strip_blank(item["stem"])))
             if q is None:
                 mismatch.append(f"#{i} 题干无法定位到题库")
@@ -164,7 +165,7 @@ def main() -> int:
     print("\n[发布一致性] 与源码同种子生成结果比对")
     report = generate(bank.questions, GenOptions(blueprint=Blueprint(args.single, args.multiple, args.judge),
                                                  seed=args.seed))
-    for pf, paper in zip(papers, report.papers):
+    for pf, paper in zip(papers, report.papers, strict=False):
         items = parse_paper(pf)
         af = answer_file_of(pf)
         check([norm(strip_blank(it.question.stem)) for it in paper.all_items()]

@@ -11,8 +11,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .models import Blueprint, Paper, PaperItem, QType
 from .generator import GenReport
+from .models import Paper, PaperItem, QType
 
 __all__ = ["ExportOptions", "ExportResult", "export_all", "paper_to_text",
            "answer_to_text", "paper_to_html", "answer_to_html", "export_docx",
@@ -122,7 +122,7 @@ def paper_to_text(paper: Paper, opts: ExportOptions, index: int = 0,
         for item in items:
             no += 1
             lines.append(f"{no}. {_stem_with_blank(item)}")
-            for label, text in zip(item.labels, item.texts):
+            for label, text in zip(item.labels, item.texts, strict=False):
                 lines.append(f"    {label}. {text}")
             lines.append("")
     if include_answers:
@@ -221,7 +221,7 @@ def paper_to_html(paper: Paper, opts: ExportOptions, index: int = 0,
         for item in items:
             no += 1
             block = [f'<div class="q"><div class="stem">{no}. {_html_escape(_stem_with_blank(item))}</div>']
-            for label, text in zip(item.labels, item.texts):
+            for label, text in zip(item.labels, item.texts, strict=False):
                 block.append(f'<div class="opt">{label}. {_html_escape(text)}</div>')
             block.append("</div>")
             parts.append("\n".join(block))
@@ -371,7 +371,6 @@ def _setup_document():
 def _write_paper_docx(doc, paper: Paper, opts: ExportOptions, index: int,
                       include_answers: bool) -> None:
     from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Cm
 
     head = _paper_header_lines(paper, opts, index)
     _add_paragraph(doc, head[0], size=16, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=4)
@@ -392,10 +391,10 @@ def _write_paper_docx(doc, paper: Paper, opts: ExportOptions, index: int,
             _add_paragraph(doc, f"{no}. {_stem_with_blank(item)}", size=10.5, space_after=1)
             longs = [len(t) for t in item.texts]
             if item.texts and max(longs) <= 12:
-                joined = "　　".join(f"{lab}. {txt}" for lab, txt in zip(item.labels, item.texts))
+                joined = "　　".join(f"{lab}. {txt}" for lab, txt in zip(item.labels, item.texts, strict=False))
                 _add_paragraph(doc, joined, size=10.5, indent=0.6, space_after=4)
             else:
-                for lab, txt in zip(item.labels, item.texts):
+                for lab, txt in zip(item.labels, item.texts, strict=False):
                     _add_paragraph(doc, f"{lab}. {txt}", size=10.5, indent=0.6, space_after=0)
                 _add_paragraph(doc, "", size=6, space_after=2)
 

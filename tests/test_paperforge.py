@@ -18,15 +18,38 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from paperforge.bank_io import (BankLoadResult, bank_stats, build_sample_questions,  # noqa: E402
-                                export_questions_to_xlsx, load_bank, make_txt_sample,
-                                rows_to_questions, write_template_xlsx)
-from paperforge.exporter import (ExportOptions, answer_to_text, export_all,  # noqa: E402
-                                 paper_to_text, safe_filename)
-from paperforge.generator import (GenOptions, GenerationError, build_paper_item,  # noqa: E402
-                                  generate, group_by_type, min_round_length)
-from paperforge.models import (AnswerParseError, Blueprint, OPTION_LABELS, QType,  # noqa: E402
-                               Question, parse_answer, parse_qtype)
+from paperforge.bank_io import (  # noqa: E402
+    bank_stats,
+    build_sample_questions,
+    export_questions_to_xlsx,
+    load_bank,
+    make_txt_sample,
+    rows_to_questions,
+    write_template_xlsx,
+)
+from paperforge.exporter import (  # noqa: E402
+    ExportOptions,
+    answer_to_text,
+    export_all,
+    paper_to_text,
+    safe_filename,
+)
+from paperforge.generator import (  # noqa: E402
+    GenerationError,
+    GenOptions,
+    build_paper_item,
+    generate,
+    min_round_length,
+)
+from paperforge.models import (  # noqa: E402
+    OPTION_LABELS,
+    AnswerParseError,
+    Blueprint,
+    QType,
+    Question,
+    parse_answer,
+    parse_qtype,
+)
 
 FIXTURES = ROOT / "fixtures"
 REAL_BANK = FIXTURES / "样例题库.xlsx"          # 合成夹具（tools/make_samples.py 生成）

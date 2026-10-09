@@ -15,10 +15,15 @@ import sys
 from pathlib import Path
 
 from . import __app_name__, __version__
-from .bank_io import bank_stats, export_questions_to_xlsx, load_bank, write_template_xlsx
+from .bank_io import (
+    bank_stats,
+    export_questions_to_xlsx,
+    load_bank,
+    write_template_xlsx,
+)
 from .exporter import ExportOptions, export_all
-from .generator import GenOptions, GenerationError, generate, min_round_length
-from .models import Blueprint, QType
+from .generator import GenerationError, GenOptions, generate, min_round_length
+from .models import Blueprint
 
 
 def attach_parent_console() -> None:

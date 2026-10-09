@@ -21,7 +21,15 @@ import math
 import random
 from dataclasses import dataclass, field
 
-from .models import OPTION_LABELS, Blueprint, GenReport, Paper, PaperItem, QType, Question
+from .models import (
+    OPTION_LABELS,
+    Blueprint,
+    GenReport,
+    Paper,
+    PaperItem,
+    QType,
+    Question,
+)
 
 __all__ = ["GenerationError", "GenOptions", "generate", "min_round_length",
            "group_by_type", "build_paper_item", "shuffle_options_of"]
@@ -147,7 +155,7 @@ def generate(questions: list[Question], options: GenOptions) -> GenReport:
     papers: list[Paper] = []
     global_seq = 0
 
-    for round_index in range(rounds):
+    for _round_index in range(rounds):
         draws: dict[QType, list[list[Question]]] = {}
         reuse_flags: dict[QType, list[list[bool]]] = {}
 
@@ -183,11 +191,11 @@ def generate(questions: list[Question], options: GenOptions) -> GenReport:
         for i in range(round_length):
             global_seq += 1
             paper = Paper(seq=global_seq, round_seq=i + 1, label=_label_for(i), items={})
-            for qtype, quota in active:
+            for qtype, _quota in active:
                 items: list[PaperItem] = []
                 do_shuffle = (qtype is QType.SINGLE and options.shuffle_single) or \
                              (qtype is QType.MULTIPLE and options.shuffle_multiple)
-                for q, reused in zip(draws[qtype][i], reuse_flags[qtype][i]):
+                for q, reused in zip(draws[qtype][i], reuse_flags[qtype][i], strict=False):
                     items.append(build_paper_item(q, rng, do_shuffle, reused=reused))
                 if options.shuffle_items_in_paper:
                     rng.shuffle(items)
