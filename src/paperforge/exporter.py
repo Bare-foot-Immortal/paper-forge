@@ -101,6 +101,17 @@ def _paper_header_lines(paper: Paper, opts: ExportOptions, index: int) -> list[s
     return [label, desc, info]
 
 
+def _paper_suffixes(report: GenReport) -> list[str]:
+    """每张卷的文件名后缀。
+
+    单轮时用卷标（A卷 / B卷…，与历史输出一致）；多轮时卷标会重复，
+    此时改用全局序号（``01_A卷``），避免后一轮的文件覆盖前一轮（BUG：整轮卷子被静默覆盖）。
+    """
+    labels = [p.label for p in report.papers]
+    duplicated = len(labels) != len(set(labels))
+    return [(f"{p.seq:02d}_{p.label}卷" if duplicated else f"{p.label}卷") for p in report.papers]
+
+
 def paper_to_text(paper: Paper, opts: ExportOptions, index: int = 0,
                   include_answers: bool = False, include_analysis: bool = False) -> str:
     """试卷纯文本渲染（同时用于 TXT 导出与界面预览）。"""
@@ -150,6 +161,7 @@ def export_txt(report: GenReport, opts: ExportOptions) -> list[Path]:
     out_dir = Path(opts.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     base = opts.base_name or "试卷"
+    suffixes = _paper_suffixes(report)
 
     if opts.merge:
         buf: list[str] = []
@@ -170,12 +182,12 @@ def export_txt(report: GenReport, opts: ExportOptions) -> list[Path]:
             out.append(fa)
     else:
         for i, paper in enumerate(report.papers):
-            f = out_dir / safe_filename(f"{base}_{paper.label}卷.txt")
+            f = out_dir / safe_filename(f"{base}_{suffixes[i]}.txt")
             f.write_text(paper_to_text(paper, opts, i, include_answers=not opts.answers_separate,
                                        include_analysis=opts.include_analysis), encoding="utf-8-sig")
             out.append(f)
             if opts.answers_separate:
-                fa = out_dir / safe_filename(f"{base}_答案_{paper.label}卷.txt")
+                fa = out_dir / safe_filename(f"{base}_答案_{suffixes[i]}.txt")
                 fa.write_text(answer_to_text(paper, opts, i, opts.include_analysis), encoding="utf-8-sig")
                 out.append(fa)
     return out
@@ -266,6 +278,7 @@ def export_html(report: GenReport, opts: ExportOptions) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     base = opts.base_name or "试卷"
 
+    suffixes = _paper_suffixes(report)
     if opts.merge:
         body = []
         for i, paper in enumerate(report.papers):
@@ -284,11 +297,11 @@ def export_html(report: GenReport, opts: ExportOptions) -> list[Path]:
     else:
         for i, paper in enumerate(report.papers):
             body = paper_to_html(paper, opts, i, include_answers=not opts.answers_separate)
-            f = out_dir / safe_filename(f"{base}_{paper.label}卷.html")
+            f = out_dir / safe_filename(f"{base}_{suffixes[i]}.html")
             f.write_text(_html_doc(body, f"{opts.title} {paper.label}卷"), encoding="utf-8")
             out.append(f)
             if opts.answers_separate:
-                fa = out_dir / safe_filename(f"{base}_答案_{paper.label}卷.html")
+                fa = out_dir / safe_filename(f"{base}_答案_{suffixes[i]}.html")
                 fa.write_text(_html_doc(answer_to_html(paper, opts, i), f"{opts.title} {paper.label}卷 答案"),
                               encoding="utf-8")
                 out.append(fa)
@@ -420,13 +433,15 @@ def export_docx(report: GenReport, opts: ExportOptions) -> list[Path]:
     out_dir = Path(opts.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     base = opts.base_name or "试卷"
+    suffixes = _paper_suffixes(report)
 
     if opts.merge:
         doc = _setup_document()
         for i, paper in enumerate(report.papers):
             if i:
                 doc.add_page_break()
-            _write_paper_docx(doc, paper, opts, i, include_answers=False)
+            _write_paper_docx(doc, paper, opts, i,
+                              include_answers=not opts.answers_separate)
         f = out_dir / safe_filename(f"{base}_全部{report.paper_count}张.docx")
         doc.save(f)
         out.append(f)
@@ -444,18 +459,18 @@ def export_docx(report: GenReport, opts: ExportOptions) -> list[Path]:
             if opts.answers_separate:
                 doc = _setup_document()
                 _write_paper_docx(doc, paper, opts, i, include_answers=False)
-                f = out_dir / safe_filename(f"{base}_{paper.label}卷.docx")
+                f = out_dir / safe_filename(f"{base}_{suffixes[i]}.docx")
                 doc.save(f)
                 out.append(f)
                 adoc = _setup_document()
                 _write_answer_docx(adoc, paper, opts)
-                fa = out_dir / safe_filename(f"{base}_答案_{paper.label}卷.docx")
+                fa = out_dir / safe_filename(f"{base}_答案_{suffixes[i]}.docx")
                 adoc.save(fa)
                 out.append(fa)
             else:
                 doc = _setup_document()
                 _write_paper_docx(doc, paper, opts, i, include_answers=True)
-                f = out_dir / safe_filename(f"{base}_{paper.label}卷.docx")
+                f = out_dir / safe_filename(f"{base}_{suffixes[i]}.docx")
                 doc.save(f)
                 out.append(f)
     return out

@@ -90,9 +90,30 @@ class AppConfig:
             return cls()
         cfg = cls()
         for key, value in (data or {}).items():
-            if hasattr(cfg, key):
-                try:
-                    setattr(cfg, key, value)
-                except Exception:
-                    continue
+            if not hasattr(cfg, key):
+                continue
+            # 逐字段按默认值类型转换：配置文件被改坏时取默认值，避免"双击没反应"
+            current = getattr(cfg, key)
+            try:
+                if isinstance(current, bool):
+                    cfg_value = bool(value)
+                elif isinstance(current, int):
+                    cfg_value = int(value)
+                elif isinstance(current, float):
+                    cfg_value = float(value)
+                elif isinstance(current, str):
+                    cfg_value = str(value)
+                elif isinstance(current, (list, tuple)):
+                    if not isinstance(value, (list, tuple)):
+                        continue
+                    cfg_value = type(current)(value)
+                elif isinstance(current, dict):
+                    if not isinstance(value, dict):
+                        continue
+                    cfg_value = dict(value)
+                else:
+                    cfg_value = value
+            except (TypeError, ValueError):
+                continue
+            setattr(cfg, key, cfg_value)
         return cfg

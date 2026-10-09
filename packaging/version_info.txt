@@ -21,7 +21,7 @@ VSVersionInfo(
             StringStruct('FileDescription', '抽题匠 PaperForge —— 题库随机抽题组卷工具'),
             StringStruct('FileVersion', '1.1.1.0'),
             StringStruct('InternalName', 'PaperForge'),
-            StringStruct('LegalCopyright', '可自由复制与分发'),
+            StringStruct('LegalCopyright', 'MIT License (c) 2026 Bare-foot-Immortal'),
             StringStruct('OriginalFilename', 'PaperForge.exe'),
             StringStruct('ProductName', '抽题匠 PaperForge'),
             StringStruct('ProductVersion', '1.1.1.0')
