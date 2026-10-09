@@ -56,7 +56,7 @@ jobs:
           $log = Join-Path $env:TEMP "smoke.log"
           Remove-Item $log -ErrorAction SilentlyContinue
           # GUI 子系统的 exe 用 & 调用不会设置 $LASTEXITCODE，必须 Start-Process -Wait -PassThru
-          $proc = Start-Process -FilePath "./dist/PaperForge.exe" -ArgumentList @(--cli "--bank" "fixtures/样例题库.xlsx" "--stats-only" "--log" $log) -Wait -PassThru
+          $proc = Start-Process -FilePath "./dist/PaperForge.exe" -ArgumentList @("--cli", "--bank", "fixtures/样例题库.xlsx", "--stats-only", "--log", $log) -Wait -PassThru
           if ($proc.ExitCode -ne 0) { throw "exe 退出码 $($proc.ExitCode)" }
           if (-not (Test-Path $log)) { throw "exe 未生成日志：$log" }
           $text = Get-Content $log -Raw -Encoding UTF8
