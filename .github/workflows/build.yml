@@ -75,5 +75,5 @@ jobs:
         with:
           files: dist/PaperForge.exe
           body: |
-            由 GitHub Actions 自动构建（AI 开发，见 AI-DEVELOPED.md）。
-            下载 `PaperForge.exe` 即可直接运行（Windows 10/11 x64，免安装、免联网）。
+            由 GitHub Actions 自动构建，下载 `PaperForge.exe` 即可直接运行
+            （Windows 10/11 x64，免安装、免联网）。
